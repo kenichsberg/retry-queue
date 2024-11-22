@@ -6,6 +6,7 @@ Each queue element is a `Retryable` (implementing `Runnable`) Object and runs on
 ## Usage
 ```java
 class RetryQueueExample {
+
     final RetryQueue retryQueue = new RetryQueue();              // Without Semaphore
     // final RetryQueue retryQueue = new RetryQueue(100);        // With Semaphore
     
@@ -36,5 +37,6 @@ class RetryQueueExample {
 
      retryQueue.put(retryable);
      // retryQueue.offer(retryable, 1, TimeUnit.SECONDS)
+
 }
 ```
