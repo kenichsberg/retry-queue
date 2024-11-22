@@ -6,7 +6,8 @@ Each queue element is a `Retryable` (implementing `Runnable`) Object and runs on
 ## Usage
 ```java
 class RetryQueueExample {
-    final RetryQueue retryQueue = new RetryQueue();
+    final RetryQueue retryQueue = new RetryQueue();              // Without Semaphore
+    // final RetryQueue retryQueue = new RetryQueue(100);        // With Semaphore
     
     final RetryableCallback<X> callback = new RetryableCallback<>() {
         @Override
@@ -17,21 +18,23 @@ class RetryQueueExample {
         @Override
         public void onFailure(Retryable<X> retryable, Throwable throwable) {
             ...
-            retryQueue.put(retryable);  // Retrys when dequeued
+            retryQueue.put(retryable);                          // Retries when dequeued
         }
     };
 
+
     final Callable<X> f = () -> {
-        ...
+        ...                                                     // The main operation
     };
 
     final RetryableBuilder<X> builder = new RetryableBuilder<>(f);
 
     final Retryable<X> retryable = builder.setMaxRetries(3)
-           .setDelayOnRetyrMs(10)
+           .setDelayOnRetyrMs(2000)
            .setCallback(callback)
            .build();
 
      retryQueue.put(retryable);
+     // retryQueue.offer(retryable, 1, TimeUnit.SECONDS)
 }
 ```
