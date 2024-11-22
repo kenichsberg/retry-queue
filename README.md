@@ -8,28 +8,30 @@ Each queue element is a `Retryable` (implementing `Runnable`) Object and runs on
 class RetryQueueExample {
     final RetryQueue retryQueue = new RetryQueue();
     
-    final RetryableCallback<...> callback = new RetryableCallback<>() {
+    final RetryableCallback<X> callback = new RetryableCallback<>() {
         @Override
-        public void onSuccess(Retryable<...> retryable, String result) {
+        public void onSuccess(Retryable<X> retryable, X result) {
             ...
         }
 
         @Override
-        public void onFailure(Retryable<...> retryable, Throwable throwable) {
+        public void onFailure(Retryable<X> retryable, Throwable throwable) {
             ...
             retryQueue.put(retryable);  // Retrys when dequeued
         }
     };
 
-    final Callable<...> f = () -> {
+    final Callable<X> f = () -> {
         ...
     };
-    final RetryableBuilder<...> builder = new RetryableBuilder<>(f);
-    final Retryable<...> retryable = builder.setMaxRetries(3)
+
+    final RetryableBuilder<X> builder = new RetryableBuilder<>(f);
+
+    final Retryable<X> retryable = builder.setMaxRetries(3)
            .setDelayOnRetyrMs(10)
            .setCallback(callback)
            .build();
-     retryQueue.put(retryable);
 
+     retryQueue.put(retryable);
 }
 ```
